@@ -72,7 +72,7 @@ namespace WindowsFormsApp2526_8
             SQLiteConnection connection = new SQLiteConnection(connectionString);
             connection.Open();
 
-            string select = "SELECT score FROM Scores ORDER BY score ASC LIMIT 5";
+            string select = "SELECT score FROM Scores ORDER BY score DESC LIMIT 5";
             SQLiteCommand command = new SQLiteCommand(select, connection);
             SQLiteDataReader reader = command.ExecuteReader();
 

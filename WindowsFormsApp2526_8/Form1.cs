@@ -5,6 +5,7 @@ using System.Drawing;
 
 using System.Windows.Forms;
 using System.Data.SQLite;
+using System.Diagnostics.Eventing.Reader;
 
 
 namespace WindowsFormsApp2526_8
@@ -55,12 +56,13 @@ namespace WindowsFormsApp2526_8
 
         private int EnemyX = 50;
         private int EnemyY = 670;
-        private int enemySize = 37;
-        private int enemySpeed = 8;
+        private int enemySize = 30;
+        private int enemySpeed = 4;
         private int enemyDX = 0;   
         private int enemyDY = 0;   
         private int enemyChangeInterval = 40;
         private int enemyCounter = 0;
+        private int enemyawareness = 150;
         private Bitmap enemyImage =Properties.Resources.ghostpacman1;
 
         List<Rectangle> walls = new List<Rectangle>();
@@ -180,6 +182,8 @@ namespace WindowsFormsApp2526_8
                 case 3: targetDX = 0; targetDY = -1; break; // up
             }
         }
+
+        
         private void EnemyChooseRandomDirection()
         {
             int choice = random.Next(4); // only 4 directions
@@ -488,12 +492,30 @@ namespace WindowsFormsApp2526_8
 
         private void EnemyMovement()
         {
-
-            enemyCounter++;
-            if (enemyCounter >= enemyChangeInterval)
+            int dx = EnemyX - PlayerX;
+            int dy = EnemyY - PlayerY;
+            int dist = Math.Abs(dx) + Math.Abs(dy);
+            if (dist < enemyawareness)
             {
-                EnemyChooseRandomDirection();
-                enemyCounter = 0;
+                if (Math.Abs(dx) > Math.Abs(dy))
+                {
+                    enemyDX = dx < 0 ? 1 : -1;  // move towards the player horizontally
+                    enemyDY = 0;
+                }
+                else
+                {
+                    enemyDY = dy < 0 ? 1 : -1;  // move towards the player vertically
+                    enemyDX = 0;
+                }
+            }
+            else
+            {
+                enemyCounter++;
+                if (enemyCounter >= enemyChangeInterval)
+                {
+                    EnemyChooseRandomDirection();
+                    enemyCounter = 0;
+                }
             }
 
             
@@ -513,16 +535,53 @@ namespace WindowsFormsApp2526_8
                 }
             }
 
-          
+
             if (blocked)
             {
-                EnemyChooseRandomDirection();
+                
+                if (dist < enemyawareness)
+                {
+                    if (Math.Abs(dx) > Math.Abs(dy))
+                    {
+                        enemyDX = dx < 0 ? 1 : -1;
+                        enemyDY = 0;
+                    }
+                    else
+                    {
+                        enemyDY = dy < 0 ? 1 : -1;
+                        enemyDX = 0;
+                    }
+                }
+                else
+                {
+                    EnemyChooseRandomDirection();
+                }
+                
+
+
+                nextEX = EnemyX + enemyDX * enemySpeed;
+                nextEY = EnemyY + enemyDY * enemySpeed;
+
+                Rectangle newRect = new Rectangle(nextEX, nextEY, enemySize, enemySize);
+
+                // If still blocked, random direction
+                foreach (var wall in walls)
+                {
+                    if (newRect.IntersectsWith(wall))
+                    {
+                        EnemyChooseRandomDirection();
+                        nextEX = EnemyX + enemyDX * enemySpeed;
+                        nextEY = EnemyY + enemyDY * enemySpeed;
+                        break;
+                    }
+                }
             }
-            else
-            {
+            else {
                 EnemyX = nextEX;
                 EnemyY = nextEY;
             }
+
+                
         }
         private void Drawwalls()
         {
