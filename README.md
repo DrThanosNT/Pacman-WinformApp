@@ -16,11 +16,6 @@ scoring system saved in a SQLite database.
 
 ## About
 
-Pacman Chase Game is an arcade-inspired project built in C# using
-Windows Forms. The player navigates through a maze, avoids enemies,
-completes phases, and tries to finish with as much remaining time as
-possible.
-
 The project demonstrates skills in animation, collision detection, game
 physics, real-time event handling, AI pathing, multi-form UI
 interaction, and persistent storage using SQLite.
