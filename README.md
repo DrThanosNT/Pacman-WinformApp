@@ -1,4 +1,4 @@
-# Pacman Chase Game
+# Pacman 
 
 A Windows Forms desktop game featuring player movement, AI-driven
 enemies, collision handling, multiple difficulty modes, and a persistent
